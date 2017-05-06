@@ -496,7 +496,9 @@ public class SwingVisualizer {
                 while(true){
                     if(Math.abs((System.nanoTime()-currTime)%nano) <= 1000000)
                     {
-                        updateRectangles();
+                        try {
+                            updateRectangles();
+                        } catch(Exception e){}
                         if (count++ == 4){
                             audioFile.playSong();
                         }
@@ -509,7 +511,8 @@ public class SwingVisualizer {
         new Thread(new TimerListener()).start();
     }
 
-   private void updateRectangles(){
+    /*
+   private void updateRectangles() throws Exception{
         if (audioFile.hasNext()){
             double[] heights = audioFile.getNext(rectangleNum);
             for (int i = 0; i < rectangleNum; i++){
@@ -532,6 +535,46 @@ public class SwingVisualizer {
                 rectangles[i].setLocation(x, y - (height/2));
                 rectangles[i].setSize(rectangles[i].getWidth(), height);
                 pastHeights[i] = height;
+            }
+            frame.setVisible(true);
+        } else{
+            t.stop();
+        }
+    }
+    */
+   
+   private void updateRectangles(){
+        if (audioFile.hasNext()){
+            //double[] heights = audioFile.getNext(rectangleNum);
+            double[] heights = audioFile.getNext(rectangleNum);
+            for (int i = 0; i < rectangleNum; i++){
+                int y = (int) (frameHeight * 0.6);
+                int x = rectangles[i].getX();
+                int height = (int) heights[i];
+
+
+                //test average smooth
+                if (height > pastHeights[i]){
+                    height = (int) (pastHeights[i] + ((height - pastHeights[i]) * smoothingRatio));
+                }
+
+
+                if (heights[i] < pastHeights[i]){
+                    height = (int) pastHeights[i] - (40);
+                }
+                /*
+                if (height > maxHeight){
+                    height = maxHeight;
+                }
+                */
+                if (height < minHeight){
+                    height = minHeight;
+                    //System.out.println("Neg");
+                }
+                rectangles[i].setLocation(x, y - height);
+                rectangles[i].setSize(rectangles[i].getWidth(), height);
+                pastHeights[i] = height;
+                //frame.setVisible(true);
             }
             frame.setVisible(true);
         } else{

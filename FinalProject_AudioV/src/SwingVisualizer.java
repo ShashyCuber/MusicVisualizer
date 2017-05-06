@@ -21,6 +21,7 @@ public class SwingVisualizer {
     private int minHeight;
     private Timer t;
     private double smoothingRatio = 0.5;
+    private boolean[] stretch;
     private double[] pastHeights;
     private double[] currentHeights;
     private ArrayList<String> backgroundFileName;
@@ -40,8 +41,10 @@ public class SwingVisualizer {
 
     long nano;
     long currTime;
+    int rectangleWidth;
     public SwingVisualizer(){
         rectangleNum = 64;
+        stretch = new boolean[rectangleNum];
         getFiles();
         createFrame();
         createOptionFrame();
@@ -136,7 +139,7 @@ public class SwingVisualizer {
         backgroundBorder.setIcon(i);
         backgroundBorder.setSize(backgroundThumbWidth, backgroundThumbHeight);
         backgroundBorder.setLocation((int) ((frameWidth - backgroundThumbWidth) * 0.5),
-                (int) (frameHeight * 0.2) - (((int) (frameHeight * 0.26) - (int) (frameHeight * 0.25)) / 2));
+            (int) (frameHeight * 0.2) - (((int) (frameHeight * 0.26) - (int) (frameHeight * 0.25)) / 2));
         backgroundBorder.setOpaque(true);
 
         //left button for background
@@ -240,7 +243,7 @@ public class SwingVisualizer {
         i = new ImageIcon(newImg);
         rightSongButton.setRolloverEnabled(true);
         rightSongButton.setRolloverIcon(i);
-        
+
         //song
         JLabel songLabel = new JLabel(musicFileName.get(musicIndex));
         songLabel.setForeground(Color.WHITE);
@@ -297,7 +300,7 @@ public class SwingVisualizer {
         colorLabel.setBackground(colors[colorIndex]);
         colorLabel.setSize((int) (frameWidth * 0.05), (int) (frameHeight * 0.05));
         colorLabel.setLocation((int) (frameWidth * 0.5) - (int) (frameWidth * 0.05 * 0.5), (int) (frameHeight * 0.69));
-        
+
         optionPanel = new JPanel(null);
         frame.add(optionPanel);
         optionPanel.add(backgroundThumb);
@@ -406,7 +409,7 @@ public class SwingVisualizer {
         backgroundLabel.setIcon(i);
         backgroundLabel.setSize(frameWidth, frameHeight);
         backgroundLabel.setLocation(0, 0);
-        
+
         panel = new JPanel(null);
         frame.add(panel);
         createRectangles();
@@ -455,7 +458,7 @@ public class SwingVisualizer {
         int totalRectangleWidth = (int) (frameWidth * 0.8);
         int y = (int) (frameHeight * 0.62);
         int rectangleHeight = minHeight;
-        int rectangleWidth =  totalRectangleWidth / (int) (rectangleNum + (0.2 * rectangleNum) + 0.2);
+        rectangleWidth =  totalRectangleWidth / (int) (rectangleNum + (0.2 * rectangleNum) + 0.2);
         int spaceWidth = (int) (rectangleWidth * 0.2);
         int x = (int) (frameWidth * 0.1);
         pastHeights = new double[rectangleNum];
@@ -469,12 +472,14 @@ public class SwingVisualizer {
             rectangles[i].setOpaque(true);
             rectangles[i].setBackground(colors[colorIndex]);
             panel.add(rectangles[i]);
+            stretch[i] = false;
         }
     }
-    
+
     private void startVisualizer(){
         class keyboardListener implements KeyListener {
             public void keyTyped(KeyEvent e) {}
+
             public void keyPressed(KeyEvent e) {
                 if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
                     t.stop();
@@ -484,11 +489,12 @@ public class SwingVisualizer {
                     frame.setVisible(true);
                 }
             }
+
             public void keyReleased(KeyEvent e) {
             }
         }
         frame.addKeyListener(new keyboardListener());
-        
+
         class TimerListener implements Runnable{
             private int count = 0;
             public void run()
@@ -512,38 +518,38 @@ public class SwingVisualizer {
     }
 
     /*
-   private void updateRectangles() throws Exception{
-        if (audioFile.hasNext()){
-            double[] heights = audioFile.getNext(rectangleNum);
-            for (int i = 0; i < rectangleNum; i++){
-                int y = (int) (frameHeight * 0.5);
-                int x = rectangles[i].getX();
-                int height = (int) heights[i];
-                try{
-                    if((height-heights[i-1])>(height/2))
-                    {
-                        rectangles[i-1].setSize(rectangles[i-1].getWidth(),(int)heights[i-1]+(height/2));
-                    }
-                    if((height-heights[i+1])>(height/2))
-                    {
-                        rectangles[i+1].setSize(rectangles[i+1].getWidth(),(int)heights[i+1]+(height/2));
-                    }
-                }catch(Exception ex){}
-                if (Math.abs(height) < minHeight){
-                    height = minHeight;
-                }
-                rectangles[i].setLocation(x, y - (height/2));
-                rectangles[i].setSize(rectangles[i].getWidth(), height);
-                pastHeights[i] = height;
-            }
-            frame.setVisible(true);
-        } else{
-            t.stop();
-        }
+    private void updateRectangles() throws Exception{
+    if (audioFile.hasNext()){
+    double[] heights = audioFile.getNext(rectangleNum);
+    for (int i = 0; i < rectangleNum; i++){
+    int y = (int) (frameHeight * 0.5);
+    int x = rectangles[i].getX();
+    int height = (int) heights[i];
+    try{
+    if((height-heights[i-1])>(height/2))
+    {
+    rectangles[i-1].setSize(rectangles[i-1].getWidth(),(int)heights[i-1]+(height/2));
     }
-    */
-   
-   private void updateRectangles(){
+    if((height-heights[i+1])>(height/2))
+    {
+    rectangles[i+1].setSize(rectangles[i+1].getWidth(),(int)heights[i+1]+(height/2));
+    }
+    }catch(Exception ex){}
+    if (Math.abs(height) < minHeight){
+    height = minHeight;
+    }
+    rectangles[i].setLocation(x, y - (height/2));
+    rectangles[i].setSize(rectangles[i].getWidth(), height);
+    pastHeights[i] = height;
+    }
+    frame.setVisible(true);
+    } else{
+    t.stop();
+    }
+    }
+     */
+
+    private void updateRectangles(){
         if (audioFile.hasNext()){
             //double[] heights = audioFile.getNext(rectangleNum);
             double[] heights = audioFile.getNext(rectangleNum);
@@ -552,27 +558,45 @@ public class SwingVisualizer {
                 int x = rectangles[i].getX();
                 int height = (int) heights[i];
 
-
                 //test average smooth
                 if (height > pastHeights[i]){
                     height = (int) (pastHeights[i] + ((height - pastHeights[i]) * smoothingRatio));
                 }
 
-
                 if (heights[i] < pastHeights[i]){
                     height = (int) pastHeights[i] - (40);
                 }
-                /*
-                if (height > maxHeight){
-                    height = maxHeight;
-                }
-                */
+
                 if (height < minHeight){
                     height = minHeight;
                     //System.out.println("Neg");
                 }
-                rectangles[i].setLocation(x, y - height);
-                rectangles[i].setSize(rectangles[i].getWidth(), height);
+
+                if (height > maxHeight){
+                    if(stretch[i])
+                    {
+                        rectangles[i].setLocation(x-1, y - height);
+                        stretch[i] = true;
+                    }
+                    else 
+                    {
+                        rectangles[i].setLocation(x, y - height);
+                    }
+                    rectangles[i].setBackground(Color.RED);
+                    rectangles[i].setSize(rectangleWidth+2,height);
+                }
+                else
+                {
+                    if(stretch[i])
+                    {
+                        stretch[i] = false;
+                        rectangles[i].setLocation(x+1, y - height);
+                    }
+                    else
+                        rectangles[i].setLocation(x, y - height);
+                    rectangles[i].setBackground(Color.WHITE);
+                    rectangles[i].setSize(rectangleWidth, height);
+                }
                 pastHeights[i] = height;
                 //frame.setVisible(true);
             }

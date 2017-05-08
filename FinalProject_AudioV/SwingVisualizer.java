@@ -456,7 +456,7 @@ public class SwingVisualizer {
         maxHeight = (int) (frameHeight * 0.5);
         minHeight = frameHeight / 200;
         int totalRectangleWidth = (int) (frameWidth * 0.8);
-        int y = (int) (frameHeight * 0.62);
+        int y = (int) (frameHeight * 0.7);
         int rectangleHeight = minHeight;
         rectangleWidth =  totalRectangleWidth / (int) (rectangleNum + (0.2 * rectangleNum) + 0.2);
         int spaceWidth = (int) (rectangleWidth * 0.2);
@@ -561,11 +561,8 @@ public class SwingVisualizer {
                 //test average smooth
                 /* if (height > pastHeights[i]){
                 height = (int) (pastHeights[i] + ((height - pastHeights[i]) * smoothingRatio));
-                }
-
-                if (heights[i] < pastHeights[i]){
-                height = (int) pastHeights[i] - (40);
                 }*/
+
                 if (height < minHeight){
                     height = minHeight;
                 }
@@ -585,6 +582,10 @@ public class SwingVisualizer {
                     }
                 }catch(Exception ex){}
 
+                if (heights[i] < (pastHeights[i] - 40)){
+                    height = (int) pastHeights[i] - (40);
+                }
+                
                 if (height > maxHeight){
                     if(stretch[i])
                     {
@@ -617,7 +618,7 @@ public class SwingVisualizer {
                     rectangles[i].setSize(rectangleWidth, height);
                 }
                 pastHeights[i] = height;
-                
+
                 //frame.setVisible(true);
             }
             frame.setVisible(true);

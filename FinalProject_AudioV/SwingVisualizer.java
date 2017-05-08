@@ -505,7 +505,7 @@ public class SwingVisualizer {
                         try {
                             updateRectangles();
                         } catch(Exception e){}
-                        if (count++ == 4){
+                        if (count++ == 1){
                             audioFile.playSong();
                         }
                     }
@@ -517,51 +517,13 @@ public class SwingVisualizer {
         new Thread(new TimerListener()).start();
     }
 
-    /*
-    private void updateRectangles() throws Exception{
-    if (audioFile.hasNext()){
-    double[] heights = audioFile.getNext(rectangleNum);
-    for (int i = 0; i < rectangleNum; i++){
-    int y = (int) (frameHeight * 0.5);
-    int x = rectangles[i].getX();
-    int height = (int) heights[i];
-    try{
-    if((height-heights[i-1])>(height/2))
-    {
-    rectangles[i-1].setSize(rectangles[i-1].getWidth(),(int)heights[i-1]+(height/2));
-    }
-    if((height-heights[i+1])>(height/2))
-    {
-    rectangles[i+1].setSize(rectangles[i+1].getWidth(),(int)heights[i+1]+(height/2));
-    }
-    }catch(Exception ex){}
-    if (Math.abs(height) < minHeight){
-    height = minHeight;
-    }
-    rectangles[i].setLocation(x, y - (height/2));
-    rectangles[i].setSize(rectangles[i].getWidth(), height);
-    pastHeights[i] = height;
-    }
-    frame.setVisible(true);
-    } else{
-    t.stop();
-    }
-    }
-     */
-
     private void updateRectangles(){
         if (audioFile.hasNext()){
-            //double[] heights = audioFile.getNext(rectangleNum);
             double[] heights = audioFile.getNext(rectangleNum);
             for (int i = 0; i < rectangleNum; i++){
                 int y = (int) (frameHeight * 0.6);
                 int x = rectangles[i].getX();
                 int height = (int) heights[i];
-
-                //test average smooth
-                /* if (height > pastHeights[i]){
-                height = (int) (pastHeights[i] + ((height - pastHeights[i]) * smoothingRatio));
-                }*/
                 if (heights[i] < (pastHeights[i] - 35)){
                     height = (int) pastHeights[i] - (40);
                 }
@@ -670,7 +632,6 @@ public class SwingVisualizer {
                 }
                 pastHeights[i] = height;
 
-                //frame.setVisible(true);
             }
             frame.setVisible(true);
         } else{

@@ -562,66 +562,114 @@ public class SwingVisualizer {
                 /* if (height > pastHeights[i]){
                 height = (int) (pastHeights[i] + ((height - pastHeights[i]) * smoothingRatio));
                 }*/
-                if (heights[i] < (pastHeights[i] - 40)){
+                if (heights[i] < (pastHeights[i] - 35)){
                     height = (int) pastHeights[i] - (40);
                 }
-                
-                
+
                 if (height < minHeight){
                     height = minHeight;
                 }
 
+                boolean goingup = (height > pastHeights[i]);
                 try{
                     if((height-heights[i-1])>(height/2))
                     {
                         int nh = (int)heights[i-1]+(height/2);
-                        rectangles[i-1].setLocation(rectangles[i-1].getX(), y - (nh));
-                        rectangles[i-1].setSize(rectangles[i-1].getWidth(),nh);
+                        if(goingup){
+                            rectangles[i-1].setLocation(rectangles[i-1].getX(), y - (nh));
+                            rectangles[i-1].setSize(rectangles[i-1].getWidth(),nh);
+                        }
+                        else 
+                        {
+                            rectangles[i-1].setSize(rectangles[i-1].getWidth(),nh);
+                            rectangles[i-1].setLocation(rectangles[i-1].getX(), y - (nh));
+                        }
                     }
                     if((height-heights[i+1])>(height/2) && heights[i+1] > 0)
                     {
                         int nh = (int)heights[i+1]+(height/2);
-                        rectangles[i+1].setLocation(rectangles[i+1].getX(), y - (nh));
-                        rectangles[i+1].setSize(rectangles[i+1].getWidth(),nh);
+                        if(goingup)
+                        {
+                            rectangles[i+1].setLocation(rectangles[i+1].getX(), y - (nh));
+                            rectangles[i+1].setSize(rectangles[i+1].getWidth(),nh);
+                        }
+                        else
+                        {
+                            rectangles[i+1].setSize(rectangles[i+1].getWidth(),nh);
+                            rectangles[i+1].setLocation(rectangles[i+1].getX(), y - (nh));
+                        }
                     }
                 }catch(Exception ex){}
 
-                
-                
                 if (height > maxHeight){
-                    if(stretch[i])
+                    if(goingup)
                     {
-                        rectangles[i].setLocation(x-1, y - height);
-                        stretch[i] = true;
+                        if(stretch[i])
+                        {
+                            rectangles[i].setLocation(x-1, y - height);
+                            stretch[i] = true;
+                        }
+                        else 
+                        {
+                            rectangles[i].setLocation(x, y - height);
+                        }
+
+                        try{
+                            int val = 180 - ((height-maxHeight)/8);
+                            rectangles[i].setBackground(new Color(255,val,val));
+                        }catch(Exception ex){ rectangles[i].setBackground(Color.RED);}
+
+                        rectangles[i].setSize(rectangleWidth+2,height);
                     }
-                    else 
+                    else
                     {
-                        rectangles[i].setLocation(x, y - height);
+                        try{
+                            int val = 180 - ((height-maxHeight)/8);
+                            rectangles[i].setBackground(new Color(255,val,val));
+                        }catch(Exception ex){ rectangles[i].setBackground(Color.RED);}
+
+                        rectangles[i].setSize(rectangleWidth+2,height);
+
+                        if(stretch[i])
+                        {
+                            rectangles[i].setLocation(x-1, y - height);
+                            stretch[i] = true;
+                        }
+                        else 
+                        {
+                            rectangles[i].setLocation(x, y - height);
+                        }
                     }
-
-                    try{
-                        int val = 150 - ((height-maxHeight)/10);
-                        rectangles[i].setBackground(new Color(255,val,val));
-                    }catch(Exception ex){ rectangles[i].setBackground(Color.RED);}
-
-                    rectangles[i].setSize(rectangleWidth+2,height);
-
                 }
                 else
                 {
-                    if(stretch[i])
+                    if(goingup)
                     {
-                        stretch[i] = false;
-                        rectangles[i].setLocation(x+1, y - height);
+                        if(stretch[i])
+                        {
+                            stretch[i] = false;
+                            rectangles[i].setLocation(x+1, y - height);
+                        }
+                        else
+                            rectangles[i].setLocation(x, y - height);
+                        rectangles[i].setBackground(Color.WHITE);
+                        rectangles[i].setSize(rectangleWidth, height);
                     }
-                    else
-                        rectangles[i].setLocation(x, y - height);
-                    rectangles[i].setBackground(Color.WHITE);
-                    rectangles[i].setSize(rectangleWidth, height);
+                    else 
+                    {
+                        rectangles[i].setBackground(Color.WHITE);
+                        rectangles[i].setSize(rectangleWidth, height);
+                        if(stretch[i])
+                        {
+                            stretch[i] = false;
+                            rectangles[i].setLocation(x+1, y - height);
+                        }
+                        else
+                            rectangles[i].setLocation(x, y - height);
+                    }
                 }
                 pastHeights[i] = height;
-                
-                
+
                 //frame.setVisible(true);
             }
             frame.setVisible(true);

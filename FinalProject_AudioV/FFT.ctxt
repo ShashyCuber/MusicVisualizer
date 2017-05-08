@@ -1,10 +1,4 @@
 #BlueJ class context
 comment0.params=x
 comment0.target=Complex[]\ fft(Complex[])
-comment1.params=x
-comment1.target=Complex[]\ ifft(Complex[])
-comment2.params=x\ y
-comment2.target=Complex[]\ cconvolve(Complex[],\ Complex[])
-comment3.params=x\ y
-comment3.target=Complex[]\ convolve(Complex[],\ Complex[])
-numComments=4
+numComments=1

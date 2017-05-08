@@ -562,10 +562,10 @@ public class SwingVisualizer {
                 /* if (height > pastHeights[i]){
                 height = (int) (pastHeights[i] + ((height - pastHeights[i]) * smoothingRatio));
                 }*/
-
                 if (heights[i] < (pastHeights[i] - 40)){
                     height = (int) pastHeights[i] - (40);
                 }
+                
                 
                 if (height < minHeight){
                     height = minHeight;
@@ -620,7 +620,8 @@ public class SwingVisualizer {
                     rectangles[i].setSize(rectangleWidth, height);
                 }
                 pastHeights[i] = height;
-
+                
+                
                 //frame.setVisible(true);
             }
             frame.setVisible(true);

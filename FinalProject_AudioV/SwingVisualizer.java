@@ -559,18 +559,31 @@ public class SwingVisualizer {
                 int height = (int) heights[i];
 
                 //test average smooth
-                if (height > pastHeights[i]){
-                    height = (int) (pastHeights[i] + ((height - pastHeights[i]) * smoothingRatio));
+                /* if (height > pastHeights[i]){
+                height = (int) (pastHeights[i] + ((height - pastHeights[i]) * smoothingRatio));
                 }
 
                 if (heights[i] < pastHeights[i]){
-                    height = (int) pastHeights[i] - (40);
-                }
-
+                height = (int) pastHeights[i] - (40);
+                }*/
                 if (height < minHeight){
                     height = minHeight;
-                    //System.out.println("Neg");
                 }
+
+                try{
+                    if((height-heights[i-1])>(height/2))
+                    {
+                        int nh = (int)heights[i-1]+(height/2);
+                        rectangles[i-1].setLocation(rectangles[i-1].getX(), y - (nh));
+                        rectangles[i-1].setSize(rectangles[i-1].getWidth(),nh);
+                    }
+                    if((height-heights[i+1])>(height/2) && heights[i+1] > 0)
+                    {
+                        int nh = (int)heights[i+1]+(height/2);
+                        rectangles[i+1].setLocation(rectangles[i+1].getX(), y - (nh));
+                        rectangles[i+1].setSize(rectangles[i+1].getWidth(),nh);
+                    }
+                }catch(Exception ex){}
 
                 if (height > maxHeight){
                     if(stretch[i])
@@ -582,8 +595,14 @@ public class SwingVisualizer {
                     {
                         rectangles[i].setLocation(x, y - height);
                     }
-                    rectangles[i].setBackground(Color.RED);
+
+                    try{
+                        int val = 150 - ((height-maxHeight)/10);
+                        rectangles[i].setBackground(new Color(255,val,val));
+                    }catch(Exception ex){ rectangles[i].setBackground(Color.RED);}
+
                     rectangles[i].setSize(rectangleWidth+2,height);
+
                 }
                 else
                 {
@@ -598,6 +617,7 @@ public class SwingVisualizer {
                     rectangles[i].setSize(rectangleWidth, height);
                 }
                 pastHeights[i] = height;
+                
                 //frame.setVisible(true);
             }
             frame.setVisible(true);

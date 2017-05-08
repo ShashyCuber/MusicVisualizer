@@ -563,6 +563,10 @@ public class SwingVisualizer {
                 height = (int) (pastHeights[i] + ((height - pastHeights[i]) * smoothingRatio));
                 }*/
 
+                if (heights[i] < (pastHeights[i] - 40)){
+                    height = (int) pastHeights[i] - (40);
+                }
+                
                 if (height < minHeight){
                     height = minHeight;
                 }
@@ -582,9 +586,7 @@ public class SwingVisualizer {
                     }
                 }catch(Exception ex){}
 
-                if (heights[i] < (pastHeights[i] - 40)){
-                    height = (int) pastHeights[i] - (40);
-                }
+                
                 
                 if (height > maxHeight){
                     if(stretch[i])
